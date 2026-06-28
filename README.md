@@ -123,7 +123,38 @@ See [docs/architecture.md](docs/architecture.md) for detail.
 `MILOCO_BASE_URL` (default `http://miloco:1810` in compose, or
 `http://host.docker.internal:1810` when Miloco runs on the host) tells SSR where
 the Miloco API is. Per-install overrides live in `~/.ssr/miloco.json`
-(`base_url`, `api_key`, `poll_interval`, `endpoints`). See `.env.example`.
+(`base_url`, `api_key`, `poll_interval`, `endpoints`), but **`MILOCO_*` env vars
+take precedence** so the container always wins. See `.env.example`.
+
+### Auth token
+
+Miloco generates a Bearer **`server.token`** on first boot and writes it to its
+`config.json`. SSR must send it, or authenticated `/api/*` calls return 401. The
+compose file mounts Miloco's volume into the `ssr` container read-only and sets
+`MILOCO_CONFIG_FILE=/miloco-home/config.json`, so **SSR auto-discovers the token
+— no manual step**. To set it explicitly instead, put it in `.env`:
+
+```bash
+docker compose exec miloco cat /root/.miloco/config.json   # → server.token
+# then add to .env:  MILOCO_API_KEY=<that token>  and: docker compose up -d ssr
+```
+
+## Troubleshooting
+
+**`ssr miloco sync` / status fails.** Run the diagnostic:
+
+```bash
+docker compose exec ssr ssr miloco status
+```
+
+- *`/health` 未响应* → SSR can't reach Miloco. Check `MILOCO_BASE_URL` points at
+  the service (`http://miloco:1810`), and `docker compose ps` shows `miloco` up.
+- *鉴权失败 (401)* → the token isn't reaching SSR. Confirm the `miloco-data`
+  volume is mounted into `ssr` and `MILOCO_CONFIG_FILE` is set (it is by
+  default), or set `MILOCO_API_KEY` in `.env`. If `ssr` started before Miloco
+  generated the token, `docker compose restart ssr`.
+- *设备为空* → bind your Mi account first: `docker compose exec miloco
+  miloco-cli account bind`.
 
 ## Credits & licensing
 

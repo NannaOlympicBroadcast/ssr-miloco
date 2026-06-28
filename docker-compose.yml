@@ -56,10 +56,16 @@ services:
       DEFAULT_MODEL: ${DEFAULT_MODEL:-gemini-3.1-flash-lite}
       # Reach the Miloco service over the compose network.
       MILOCO_BASE_URL: ${MILOCO_BASE_URL:-http://miloco:1810}
+      # Auto-discover Miloco's auto-generated Bearer token (server.token) from
+      # its config.json on the shared volume — no manual copy needed. An explicit
+      # MILOCO_API_KEY in .env still wins if set.
+      MILOCO_CONFIG_FILE: /miloco-home/config.json
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - ssr-data:/data
+      # Read-only view of Miloco's home so ssr can read server.token.
+      - miloco-data:/miloco-home:ro
     # Serve the configured gateway "home" (channel + Miloco activity→bus bridge).
     # Configure the channel first:  docker compose run --rm ssr channel config xiaomi
     # then install the gateway record:  docker compose run --rm ssr gateway install home --channel xiaomi --no-start
