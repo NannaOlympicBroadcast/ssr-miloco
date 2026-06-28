@@ -36,5 +36,8 @@ RUN sed -i 's/\r$//' /usr/local/bin/ssr-miloco-entrypoint \
 # Reaches a host-run Miloco by default; compose overrides to the `miloco` service.
 ENV MILOCO_BASE_URL=http://host.docker.internal:1810
 
-ENTRYPOINT ["ssr-miloco-entrypoint"]
+# Invoke the entrypoint through bash explicitly (not via its shebang) so the
+# image works even if the script slipped in with CRLF — the kernel never parses
+# `#!/usr/bin/env bash\r`. The sed above also keeps the file body CR-free.
+ENTRYPOINT ["bash", "/usr/local/bin/ssr-miloco-entrypoint"]
 CMD ["gateway", "run", "home"]
