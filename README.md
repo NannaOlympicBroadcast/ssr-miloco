@@ -82,11 +82,23 @@ subcommands):
 | --- | --- |
 | `miloco_status` | Is Miloco reachable / the Mi account bound? |
 | `miloco_devices` | List Mi Home devices |
+| `miloco_device_status` / `miloco_device_spec` | Read a device's current props / its MIoT spec |
 | `miloco_device_control` | Control a device (`{"siid":2,"piid":1,"value":true}`) |
+| `miloco_trigger_scene` | Run a Mi Home scene (回家/离家/睡眠…) |
+| `miloco_cameras` | List Mi Home cameras |
 | `miloco_family` | Recognised family members / persons |
 | `miloco_activities` | Recent home events |
-| `miloco_automations` | Automation rules |
+| `miloco_automations` / `miloco_tasks` | Automation rules / persistent home tasks |
+| `miloco_home_profile` | Home memory — family preferences, habits, routines |
+| `miloco_scope` | Perception scope (which homes/cameras Miloco watches) |
+| `miloco_notify` | Proactive notification (speaker TTS / IM / Mi push) |
+| `miloco_refresh` | Refresh Miloco's device caches |
 | `miloco_sync` | Refresh the persistent home-context snapshot |
+
+> Miloco's official capability **skills** (`plugins/skills`) are bundled into the
+> SSR agent's knowledge base (`ssr/builtin_skills/miloco-*`), with a
+> `miloco-overview` adapter mapping them onto the `miloco_*` tools — so the agent
+> knows Miloco's full capability surface and how to drive it.
 
 React to the home from a handler agent:
 
