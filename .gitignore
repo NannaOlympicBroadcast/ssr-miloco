@@ -1,0 +1,8 @@
+.env
+*.pyc
+__pycache__/
+.DS_Store
+# Local clones of upstream projects (built via Dockerfiles instead).
+/ssr-agent/
+/xiaomi-miloco/
+*.log
