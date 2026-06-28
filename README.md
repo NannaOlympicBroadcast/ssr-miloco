@@ -49,9 +49,9 @@ cp .env.example .env          # add GEMINI_API_KEY, MIMO/Miloco model keys, etc.
 # Build & start Miloco + the SSR agent gateway
 docker compose up -d
 
-# One-time: bind your Mi account to Miloco (follow the dashboard prompts)
+# One-time: bind your Mi account to Miloco (follow the CLI prompts)
 docker compose exec miloco miloco-cli account bind
-#   the dashboard is published on http://localhost:1810/
+#   the Miloco REST API / dashboard is published on http://localhost:1810/
 
 # One-time: configure the SSR messaging channel (e.g. the XiaoAI speaker)
 docker compose run --rm ssr channel config xiaomi
