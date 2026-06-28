@@ -21,6 +21,7 @@ services:
       args:
         # Base image registry mirror (docker.1ms.run by default; see .env).
         BASE_IMAGE: ${BASE_IMAGE:-docker.1ms.run/library/python:3.11-slim}
+        NODE_IMAGE: ${NODE_IMAGE:-docker.1ms.run/library/node:20-slim}
     image: ssr-miloco/miloco:latest
     restart: unless-stopped
     env_file:
