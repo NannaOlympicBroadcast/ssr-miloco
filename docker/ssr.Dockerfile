@@ -4,7 +4,10 @@
 # runs it as a long-lived gateway: it serves a messaging channel and starts the
 # Miloco activity → bus bridge. All mutable state lives under
 # SSR_HOME=/data/.ssr (a volume), so credentials/tokens/sessions persist.
-FROM python:3.11-slim
+# Base image pulled from the docker.1ms.run mirror (faster/available in CN).
+# Override with --build-arg BASE_IMAGE=python:3.11-slim to use Docker Hub.
+ARG BASE_IMAGE=docker.1ms.run/library/python:3.11-slim
+FROM ${BASE_IMAGE}
 
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \

@@ -10,7 +10,10 @@
 # `scripts/install.sh` flow — pin MILOCO_REF and adjust to match the Miloco
 # release you deploy. A multimodal model key (MiMo recommended) is required at
 # runtime; pass it via the environment (MILOCO_OMNI_API_KEY) — see .env.example.
-FROM python:3.11-slim
+# Base image pulled from the docker.1ms.run mirror (faster/available in CN).
+# Override with --build-arg BASE_IMAGE=python:3.11-slim to use Docker Hub.
+ARG BASE_IMAGE=docker.1ms.run/library/python:3.11-slim
+FROM ${BASE_IMAGE}
 
 ENV PYTHONUNBUFFERED=1 \
     MILOCO_HOME=/root/.miloco
