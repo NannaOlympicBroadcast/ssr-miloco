@@ -22,7 +22,7 @@ ARG SSR_REPO=https://github.com/NannaOlympicBroadcast/ssr-agent.git
 ARG INSTALL_NODE=false
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git ca-certificates \
+    && apt-get install -y --no-install-recommends git ca-certificates curl \
     && if [ "$INSTALL_NODE" = "true" ]; then apt-get install -y --no-install-recommends nodejs npm; fi \
     && rm -rf /var/lib/apt/lists/*
 
