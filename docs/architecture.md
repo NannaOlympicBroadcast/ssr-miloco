@@ -24,10 +24,12 @@ ssr-miloco combines two upstream projects. The integration code lives in
   - **A typed HTTP client** (`MilocoClient`) with the endpoints above, all
     overridable in `~/.ssr/miloco.json` so a new Miloco version can be pointed
     at without a code change.
-  - **A bus event source** (`MilocoActivityBridge`) that polls `/api/events`
-    and republishes each new activity as a `miloco.activity.<type>` event on the
-    SSR bus, de-duplicated by activity id (state persisted under
-    `~/.ssr/miloco/`). Started automatically by `ssr gateway run`.
+  - **A bus event source** (`MilocoActivityBridge`) that streams `/api/events/stream`
+    (**SSE**, real-time) and republishes each new activity as a
+    `miloco.activity.<type>` event on the SSR bus, de-duplicated by activity id
+    (state persisted under `~/.ssr/miloco/`). It falls back to polling
+    `/api/events` when the stream is unavailable, and backfills any gap on every
+    reconnect so no event is missed. Started automatically by `ssr gateway run`.
   - **Persistent context** — `ssr miloco sync` snapshots devices, family
     members, recent events and automations to `~/.ssr/miloco/snapshot.json`,
     which the context pool loads as retrievable REFS items.
@@ -38,9 +40,10 @@ ssr-miloco combines two upstream projects. The integration code lives in
 
 1. Miloco perceives the home and writes **activities** (events) + maintains
    device/identity/rule state.
-2. The SSR gateway's bridge polls activities and emits `miloco.activity.*` bus
-   events. Bus-handler agents (registered via `bus_create_handler`) fire a turn
-   on matching events and can notify a channel, control a device, etc.
+2. The SSR gateway's bridge **streams** activities over SSE (polling fallback)
+   and emits `miloco.activity.*` bus events in real time. Bus-handler agents
+   (registered via `bus_create_handler`) fire a turn on matching events and can
+   notify a channel, control a device, etc.
 3. `ssr miloco sync` periodically snapshots the home so the agent reasons over
    current devices/people/rules without a live call.
 4. Agent tools (or the user via a channel) call back into Miloco to query or
