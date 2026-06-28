@@ -28,7 +28,10 @@ RUN pip install "git+${SSR_REPO}@${SSR_REF}"
 VOLUME ["/data"]
 
 COPY docker/ssr-entrypoint.sh /usr/local/bin/ssr-miloco-entrypoint
-RUN chmod +x /usr/local/bin/ssr-miloco-entrypoint
+# Strip any CR (defensive: if the file was checked out with CRLF on a Windows
+# host, the shebang would otherwise be `bash\r`) and make it executable.
+RUN sed -i 's/\r$//' /usr/local/bin/ssr-miloco-entrypoint \
+    && chmod +x /usr/local/bin/ssr-miloco-entrypoint
 
 # Reaches a host-run Miloco by default; compose overrides to the `miloco` service.
 ENV MILOCO_BASE_URL=http://host.docker.internal:1810
