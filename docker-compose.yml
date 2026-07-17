@@ -29,11 +29,9 @@ services:
     environment:
       # Multimodal model keys used by Miloco (MiMo recommended).
       MILOCO_OMNI_API_KEY: ${MILOCO_OMNI_API_KEY:-}
+    network_mode: host
     volumes:
       - miloco-data:/root/.miloco
-    ports:
-      # Dashboard + REST API.
-      - "1810:1810"
 
   # ---- SSR Agent — gateway that serves a channel + the Miloco bus bridge --
   ssr:
@@ -54,8 +52,8 @@ services:
     environment:
       SSR_HOME: /data/.ssr
       DEFAULT_MODEL: ${DEFAULT_MODEL:-gemini-3.1-flash-lite}
-      # Reach the Miloco service over the compose network.
-      MILOCO_BASE_URL: ${MILOCO_BASE_URL:-http://miloco:1810}
+      # Reach Miloco through the host network.
+      MILOCO_BASE_URL: ${MILOCO_BASE_URL:-http://host.docker.internal:1810}
       # Auto-discover Miloco's auto-generated Bearer token (server.token) from
       # its config.json on the shared volume — no manual copy needed. An explicit
       # MILOCO_API_KEY in .env still wins if set.

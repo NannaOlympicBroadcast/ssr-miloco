@@ -132,9 +132,8 @@ See [docs/architecture.md](docs/architecture.md) for detail.
 
 ## Configuration
 
-`MILOCO_BASE_URL` (default `http://miloco:1810` in compose, or
-`http://host.docker.internal:1810` when Miloco runs on the host) tells SSR where
-the Miloco API is. Per-install overrides live in `~/.ssr/miloco.json`
+`MILOCO_BASE_URL` (default `http://host.docker.internal:1810` in compose) tells
+SSR where the Miloco API is. Per-install overrides live in `~/.ssr/miloco.json`
 (`base_url`, `api_key`, `poll_interval`, `endpoints`), but **`MILOCO_*` env vars
 take precedence** so the container always wins. See `.env.example`.
 
@@ -160,7 +159,7 @@ docker compose exec ssr ssr miloco status
 ```
 
 - *`/health` 未响应* → SSR can't reach Miloco. Check `MILOCO_BASE_URL` points at
-  the service (`http://miloco:1810`), and `docker compose ps` shows `miloco` up.
+  `http://host.docker.internal:1810`, and `docker compose ps` shows `miloco` up.
 - *鉴权失败 (401)* → the token isn't reaching SSR. Confirm the `miloco-data`
   volume is mounted into `ssr` and `MILOCO_CONFIG_FILE` is set (it is by
   default), or set `MILOCO_API_KEY` in `.env`. If `ssr` started before Miloco
